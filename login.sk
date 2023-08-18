@@ -1,0 +1,161 @@
+# Dépendance > ip.sk < - https://skript-mc.fr/forum/files/file/487-ip-protect/ - Compatible après la version 2.8
+
+options:
+	Prefix: &8[&cLogin&8] &6➡
+
+on load:
+	if file "plugins/Skript/scripts/ip.sk" doesn't exists:
+		set {dependence} to false
+	else:
+		set {dependence} to true
+
+on join:
+	set {play.%player%} to false
+	if {dependence} is true:
+		if {dc.%player%} is true:
+			set {play.%player%} to true
+		if {1.%player%} isn't set: 
+			set {fj.%player%} to true
+			set {1.%player%} to true
+			set {dc.%player%} to false
+		if {fj.%player%} is true:
+			wait 1 second
+			send "{@Prefix} &cVeuillez faire /register <mdp> <mdp>" to player
+		else:
+			if {dc.%player%} is false:
+				wait 1 second
+				send "{@Prefix} &cFaite /login <mdp>" to player
+			else:
+				stop
+	else:
+		if player is op:
+			send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+
+on command:
+	if {play.%player%} is false:
+		if command isn't "login":
+			send "{@Prefix} &cVeuillez vous connecter pour effectuer des commandes !" to player
+			cancel event
+
+on any movement:
+	if {play.%player%} is false:
+		cancel event
+	else:
+		stop
+
+command /register [<text>] [<text>]:
+	trigger:
+		if {dependence} is true:
+			if {play.%player%} is false:
+				if arg 1 or arg 2 isn't "install":
+					if arg-1 = arg-2:
+						if {password::%player%} is set:
+							send "{@Prefix} &cVous vous êtes déjà enregistré ! Faite /login <mdp>" to player
+						else:			
+							set {password::%player%} to arg-1
+							set {fj.%player%} to false
+							set {play.%player%} to true
+							send "{@Prefix} &aBon Jeu !"
+					else:
+						send "{@Prefix} &cLes mots de passe ne sont pas identique !" to player
+				else:
+					send "{@Prefix} &cLe mot de passe 'install' n'est pas disponible !" to player
+			else:
+				send "{@Prefix} &cTu es déjà connecté !" to player
+		else:
+			if player is op:
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+
+command /login [<text>]:
+	trigger:
+		if player is op:
+			if arg 1 is "install":
+				if file "plugins/Skript/scripts/ip.sk" doesn't exists:
+					create file "plugins/Skript/scripts/ip.sk"
+					download from "https://raw.githubusercontent.com/NorXV1/IP-Protect/main/ip.sk" to "plugins/Skript/scripts/ip.sk"
+					wait 1 second
+					if file "plugins/Skript/scripts/ip.sk" exists:
+						send "{@Prefix} &aInstallation terminé avec succès fait &e/ipp &apour connaître les commands !" to player
+						make console execute command "sk reload login.sk"
+						wait 1 tick
+						send "{@Prefix} &aSkript Login restart !" to player
+						set {dependence} to true
+					else:
+						send "{@Prefix} &cErreur d'installation !" to player
+				else:
+					send "{@Prefix} &cLe script est déjà présent si le problème persiste contacté moi ! Discord: ravenstm" to player
+			else:
+				send "{@Prefix} &cVous n'êtes pas OP !" to player
+		if {dependence} is true:
+			if {play.%player%} is false:
+				if {password::%player%} is set:
+					if arg-1 = {password::%player%}:
+						set {play.%player%} to true
+						wait 1 tick
+						make console execute command "/effect clear %player%"
+						send "{@Prefix} &aBon Jeu !" to player
+					else:
+						send "{@Prefix} &cLe mot de passe n'est as bon !" to player
+				else:
+					send "{@Prefix} &cFait /register <mdp> <mdp>" to player
+			else:
+				send "{@Prefix} &cTu es déjà connecté !" to player
+		else:
+			if player is op:
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+
+command /dc:
+	trigger:
+		if {dependence} is true:
+			if {ip.type::%player%} is "uni":
+				if {play.%player%} is true:
+					wait 1 second
+					open virtual chest inventory with size 1 named "&cEtat de Connextion" to player
+					wait 2 ticks
+					format gui slot 0 of player with black stained glass named "&8" 
+					format gui slot 1 of player with black stained glass named "&8" 
+					format gui slot 2 of player with emerald named "&aActiver" with lore "&eVous pourrez vous connecter sans mot de passe !" to run:
+						if {dc.%player%} is false:
+							set {dc.%player%} to true
+							send "{@Prefix} &aVous pouvez désormais vous connecter sans mot de passe !" to player
+							wait 1 tick
+							close player's inventory
+						else:
+							close player's inventory
+							wait 1 tick
+							send "{@Prefix} &cCeci est déjà activé !" to player
+					format gui slot 3 of player with black stained glass named "&8" 
+					format gui slot 4 of player with black stained glass named "&8" 
+					format gui slot 5 of player with diamond named "&cDésactiver" with lore "&cVous devrez vous connecter avec votre mot de passe !" to run:
+						if {dc.%player%} is true:
+							set {dc.%player%} to false
+							send "{@Prefix} &cVous devrez vous connecter avec votre mot de passe !" to player
+							wait 1 tick
+							close player's inventory
+						else:
+							close player's inventory
+							wait 1 tick
+							send "{@Prefix} &cCeci est déjà activé !" to player
+					format gui slot 6 of player with black stained glass named "&8" 
+					format gui slot 7 of player with black stained glass named "&8" 
+					format gui slot 8 of player with black stained glass named "&8"
+				else:
+					send "{@Prefix} &cVous devez être connecter pour effectuer ceci !" to player
+			else if {ip.type::%player%} is "dyna":
+				send "{@Prefix} &cEn tant que sécurité avec l'ip Dynamique vous ne possedez pas cette fonctionnalité !" to player
+		else:
+			if player is op:
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+
+
+# Liste Variable + Utilité #
+
+# - {dependence} => Dépendance 'ip.sk' 
+
+# - {ip.type::%player%} => Variable si ip Uni ou Dyna dans le skript 'ip.sk'
+
+# - {dc.%player%} => Variable pour la connection direct sans mdp 
+
+# - {password::%player%} => Stockage password du joueurs
+
+# - {play.%player%} => Variable pour dire si le joueurs s'est login ou non 
