@@ -29,7 +29,7 @@ on join:
 				stop
 	else:
 		if player is op:
-			send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+			send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /lginstall&f)" to player
 
 on command:
 	if {play.%player%} is false:
@@ -64,28 +64,10 @@ command /register [<text>] [<text>]:
 				send "{@Prefix} &cTu es déjà connecté !" to player
 		else:
 			if player is op:
-				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /lginstall&f)" to player
 
 command /login [<text>]:
 	trigger:
-		if player is op:
-			if arg 1 is "install":
-				if file "plugins/Skript/scripts/ip.sk" doesn't exists:
-					create file "plugins/Skript/scripts/ip.sk"
-					download from "https://raw.githubusercontent.com/NorXV1/IP-Protect/main/ip.sk" to "plugins/Skript/scripts/ip.sk"
-					wait 1 second
-					if file "plugins/Skript/scripts/ip.sk" exists:
-						send "{@Prefix} &aInstallation terminé avec succès fait &e/ipp &apour connaître les commands !" to player
-						make console execute command "sk reload login.sk"
-						wait 1 tick
-						send "{@Prefix} &aSkript Login restart !" to player
-						set {dependence} to true
-					else:
-						send "{@Prefix} &cErreur d'installation !" to player
-				else:
-					send "{@Prefix} &cLe script est déjà présent si le problème persiste contacté moi ! Discord: ravenstm" to player
-			else:
-				send "{@Prefix} &cVous n'êtes pas OP !" to player
 		if {dependence} is true:
 			if {play.%player%} is false:
 				if {password::%player%} is set:
@@ -102,7 +84,7 @@ command /login [<text>]:
 				send "{@Prefix} &cTu es déjà connecté !" to player
 		else:
 			if player is op:
-				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /lginstall&f)" to player
 
 command /dc:
 	trigger:
@@ -145,8 +127,28 @@ command /dc:
 				send "{@Prefix} &cEn tant que sécurité avec l'ip Dynamique vous ne possedez pas cette fonctionnalité !" to player
 		else:
 			if player is op:
-				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /login install&f)" to player
+				send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /lginstall&f)" to player
 
+command /lginstall:
+	trigger:
+		if player is op:
+			if arg 1 is "install":
+				if file "plugins/Skript/scripts/ip.sk" doesn't exists:
+					create file "plugins/Skript/scripts/ip.sk"
+					download from "https://raw.githubusercontent.com/NorXV1/IP-Protect/main/ip.sk" to "plugins/Skript/scripts/ip.sk"
+					wait 1 second
+					if file "plugins/Skript/scripts/ip.sk" exists:
+						send "{@Prefix} &aInstallation terminé avec succès fait &e/ipp &apour connaître les commands !" to player
+						make console execute command "sk reload login.sk"
+						wait 1 tick
+						send "{@Prefix} &aSkript Login restart !" to player
+						set {dependence} to true
+					else:
+						send "{@Prefix} &cErreur d'installation !" to player
+				else:
+					send "{@Prefix} &cLe script est déjà présent si le problème persiste contacté moi ! Discord: ravenstm" to player
+			else:
+				send "{@Prefix} &cVous n'êtes pas OP !" to player
 
 # Liste Variable + Utilité #
 
