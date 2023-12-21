@@ -32,10 +32,13 @@ on join:
 			send "{@Prefix} &cVous avez besoin de la dépendance &eip.sk &c! &f(&bFaite /lginstall&f)" to player
 
 on command:
-	if {play.%player%} is false:
-		if command isn't "login":
-			send "{@Prefix} &cVeuillez vous connecter pour effectuer des commandes !" to player
-			cancel event
+	if command isn't "register" or "login":
+		if {play.%player%} is false:
+			if command isn't "login":
+				send "{@Prefix} &cVeuillez vous connecter pour effectuer des commandes !" to player
+				cancel event
+	else:
+		stop
 
 on any movement:
 	if {play.%player%} is false:
@@ -132,23 +135,22 @@ command /dc:
 command /lginstall:
 	trigger:
 		if player is op:
-			if arg 1 is "install":
-				if file "plugins/Skript/scripts/ip.sk" doesn't exists:
-					create file "plugins/Skript/scripts/ip.sk"
-					download from "https://raw.githubusercontent.com/NorXV1/IP-Protect/main/ip.sk" to "plugins/Skript/scripts/ip.sk"
-					wait 1 second
-					if file "plugins/Skript/scripts/ip.sk" exists:
-						send "{@Prefix} &aInstallation terminé avec succès fait &e/ipp &apour connaître les commands !" to player
-						make console execute command "sk reload login.sk"
-						wait 1 tick
-						send "{@Prefix} &aSkript Login restart !" to player
-						set {dependence} to true
-					else:
-						send "{@Prefix} &cErreur d'installation !" to player
+			if file "plugins/Skript/scripts/ip.sk" doesn't exists:
+				create file "plugins/Skript/scripts/ip.sk"
+				download from "https://raw.githubusercontent.com/NorXV1/IP-Protect/main/ip.sk" to "plugins/Skript/scripts/ip.sk"
+				wait 1 second
+				if file "plugins/Skript/scripts/ip.sk" exists:
+					send "{@Prefix} &aInstallation terminé avec succès fait &e/ipp &apour connaître les commands !" to player
+					make console execute command "sk reload login.sk"
+					wait 1 tick
+					send "{@Prefix} &aSkript Login restart !" to player
+					set {dependence} to true
 				else:
-					send "{@Prefix} &cLe script est déjà présent si le problème persiste contacté moi ! Discord: ravenstm" to player
+					send "{@Prefix} &cErreur d'installation !" to player
 			else:
-				send "{@Prefix} &cVous n'êtes pas OP !" to player
+				send "{@Prefix} &cLe script est déjà présent si le problème persiste contacté moi ! Discord: ravenstm" to player
+		else:
+			send "{@Prefix} &cVous n'êtes pas OP !" to player
 
 # Liste Variable + Utilité #
 
